@@ -79,6 +79,7 @@
             align-items: center;
             position: absolute;
             transition: all 0.1s ease-in-out;
+            z-index: 10;
         }
         
         .tile-2 {
@@ -236,10 +237,9 @@
             document.getElementById('game-over').style.display = 'none';
             
             // Clear all tiles
-            tiles.forEach(tile => {
-                if (tile.element && tile.element.parentNode) {
-                    tile.element.parentNode.removeChild(tile.element);
-                }
+            const gameContainer = document.querySelector('.game-container');
+            document.querySelectorAll('.tile').forEach(tile => {
+                gameContainer.removeChild(tile);
             });
             tiles = [];
             
@@ -599,6 +599,8 @@
                 case 'ArrowDown':
                     moved = moveDown();
                     break;
+                default:
+                    return; // Exit if other key pressed
             }
             
             if (moved) {
@@ -626,6 +628,9 @@
         function handleSwipe() {
             let dx = touchEndX - touchStartX;
             let dy = touchEndY - touchStartY;
+            
+            // Minimum swipe distance
+            if (Math.abs(dx) < 30 && Math.abs(dy) < 30) return;
             
             // Determine the primary direction
             if (Math.abs(dx) > Math.abs(dy)) {
